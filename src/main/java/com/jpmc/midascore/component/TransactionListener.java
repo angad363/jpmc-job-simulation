@@ -25,11 +25,11 @@ public class TransactionListener {
 
     @KafkaListener(topics = "${general.kafka-topic}", groupId = "midas-core-group")
     public void handleTransaction(Transaction transaction){
-//        System.out.println("Received Transaction:" + transaction);
+        System.out.println("Received Transaction:" + transaction);
         UserRecord sender = userRepository.findById(transaction.getSenderId());
         UserRecord recipient = userRepository.findById(transaction.getRecipientId());
 
-        //System.out.println("Before transaction - Sender balance: " + sender.getBalance() + ", Recipient balance: " + recipient.getBalance());
+        System.out.println("Before transaction - Sender balance: " + sender.getBalance() + ", Recipient balance: " + recipient.getBalance());
 
         if (sender.getBalance() >= transaction.getAmount()) {
             // Process transaction: deduct from sender and add to recipient
@@ -40,7 +40,7 @@ public class TransactionListener {
             recipient.setBalance(recipient.getBalance() + transaction.getAmount());
 
             // Debugging point to check balances after transaction
-            //System.out.println("After transaction - Sender balance: " + sender.getBalance() + ", Recipient balance: " + recipient.getBalance());
+            System.out.println("After transaction - Sender balance: " + sender.getBalance() + ", Recipient balance: " + recipient.getBalance());
 
             // Save the transaction record and update user balances
             TransactionRecord record = new TransactionRecord(sender, recipient, transaction.getAmount(), incentive.getAmount());
@@ -48,9 +48,9 @@ public class TransactionListener {
             userRepository.save(sender);
             userRepository.save(recipient);
 
-            if (sender.getName().equals("wilbur")) {
-                System.out.println("Wilbur's balance after transaction: " + recipient.getBalance());
-            }
+//            if (sender.getName().equals("wilbur")) {
+//                System.out.println("Wilbur's balance after transaction: " + recipient.getBalance());
+//            }
 
 
         } else {
